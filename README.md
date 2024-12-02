@@ -98,8 +98,8 @@ git clone https://github.com/OptimalGrowYT/NOTPIXEL-ADS-WATCHER.git
 
 cd NOTPIXEL-ADS-WATCHER
 
-nano QUERY_ID.txt
-
 pip install -r requirements.txt
+
+nano QUERY_ID.txt
 
 python3 main.py
