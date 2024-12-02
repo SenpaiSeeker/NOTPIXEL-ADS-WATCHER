@@ -96,7 +96,7 @@ pkg install nano
 
 git clone https://github.com/OptimalGrowYT/NOTPIXEL-ADS-WATCHER.git
 
-CD NOTPIXEL-ADS-WATCHER
+cd NOTPIXEL-ADS-WATCHER
 
 nano QUERY_ID.txt
 
