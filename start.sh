@@ -1,10 +1,9 @@
 #!/bin/bash
 
 PID=""
-LOG_FILE="script_output.log"  # Log file to monitor for the "Delay" message.
 
 function auto() {
-    python3 Script.py &> $LOG_FILE &  # Redirecting output to log file.
+    python3 Script.py &
     PID=$!
     echo "Running with PID: $PID"
 }
@@ -19,26 +18,17 @@ function stop() {
 }
 
 function check_delay() {
-    # Check if the "Delay" message exists in the log file.
-    if grep -q "Delay" $LOG_FILE; then
-        echo "Delay detected. Restarting..."
-        return 0  # Delay detected
-    else
-        return 1  # No Delay detected
+    if ps -p $PID -o comm= | grep -q "Script.py"; then
+        if tail -n 10 /var/log/syslog | grep -q "Delay"; then
+            echo "Delay detected, restarting process..."
+            stop
+            auto
+        fi
     fi
 }
 
 while true; do
     echo "Starting auto process..."
     auto
-
-    # Monitor for "Delay" message and restart if found.
-    while true; do
-        sleep 5  # Check every 5 seconds.
-        
-        if check_delay; then
-            stop
-            break  # Exit the inner loop and restart the process.
-        fi
-    done
+    check_delay
 done
