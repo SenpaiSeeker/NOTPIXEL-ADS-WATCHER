@@ -1,7 +1,3 @@
-#!/bin/bash
-
-PID=""
-
 function auto() {
     python3 Script.py &
     PID=$!
@@ -18,7 +14,7 @@ function stop() {
 }
 
 function check_delay() {
-    while true; do6
+    while true; do
         if ps -p $PID -o comm= | grep -q "Script.py"; then
             if tail -n 10 /var/log/syslog | grep -q "Delay"; then
                 echo "Delay detected, restarting process..."
@@ -26,6 +22,7 @@ function check_delay() {
                 auto
             fi
         fi
+        sleep 5
     done
 }
 
