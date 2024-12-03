@@ -1,36 +1,37 @@
 #!/bin/bash
 
-LOG_FILE="script.log"
-
+# Fungsi untuk memulai proses
 function auto() {
-    echo "Starting script..."
-    python3 Script.py >> "$LOG_FILE" 2>&1 &
-    PID=$!
-    echo "Script running with PID: $PID"
+    python3 Script.py &  # Menjalankan Script.py di latar belakang
+    PID=$!               # Menyimpan PID proses
+    echo "Running with PID: $PID"
 }
 
+# Fungsi untuk menghentikan proses
 function stop() {
-    if [ ! -z "$PID" ] && ps -p $PID > /dev/null; then
-        echo "Stopping script with PID: $PID"
-        kill -9 $PID
-        wait $PID 2>/dev/null
+    if [ ! -z "$PID" ]; then
+        echo "Stopping process with PID: $PID"
+        kill -9 $PID 2>/dev/null  # Mematikan proses dengan PID yang tersimpan
+        PID=""
     else
-        echo "No running process found to stop."
+        echo "No process found to stop."
     fi
 }
 
-# Loop utama
+# Memulai loop untuk memonitor log
 while true; do
-    echo "Monitoring log for 'Delay 6 minutes'..."
+    echo "Starting auto process..."
     auto
 
-    # Pantau log
-    while true; do
-        if grep -q "Delay 6 minutes" "$LOG_FILE"; then
-            echo "Log detected: 'Delay 6 minutes'. Restarting process..."
+    # Memeriksa log untuk pesan "Delay 6 minutes"
+    tail -f /var/log/syslog | while read LINE; do
+        echo "$LINE" | grep -q "Delay 6 minutes"
+        if [ $? -eq 0 ]; then
+            echo "Detected 'Delay 6 minutes' in logs. Restarting process..."
             stop
             break
         fi
-        sleep 1 # Hindari penggunaan CPU tinggi
     done
+
+    sleep 1  # Opsional, tambahkan jeda untuk menghindari iterasi yang terlalu cepat
 done
