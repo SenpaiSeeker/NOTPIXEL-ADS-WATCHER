@@ -18,17 +18,17 @@ function stop() {
 }
 
 function check_delay() {
-    if ps -p $PID -o comm= | grep -q "Script.py"; then
-        if tail -n 10 /var/log/syslog | grep -q "Delay"; then
-            echo "Delay detected, restarting process..."
-            stop
-            auto
+    while true; do6
+        if ps -p $PID -o comm= | grep -q "Script.py"; then
+            if tail -n 10 /var/log/syslog | grep -q "Delay"; then
+                echo "Delay detected, restarting process..."
+                stop
+                auto
+            fi
         fi
-    fi
+    done
 }
 
-while true; do
-    echo "Starting auto process..."
-    auto
-    check_delay
-done
+echo "Starting auto process..."
+auto
+check_delay
