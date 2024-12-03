@@ -47,7 +47,7 @@ def run_script_continuously():
         display_additional_info()
         
         # Start the script and leave it running indefinitely
-        process = subprocess.Popen(['python', 'script.py'])
+        process = subprocess.Popen(['python3', 'script.py'])
         print("Started script.py with PID:", process.pid)
         
         # Wait indefinitely (no time.sleep or termination)
