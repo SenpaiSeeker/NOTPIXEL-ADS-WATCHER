@@ -16,6 +16,6 @@ function stop() {
 while true; do
     echo "Starting auto process..."
     auto
-    sleep 30
+    sleep 60
     stop
 done
